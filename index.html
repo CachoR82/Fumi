@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Datos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h3 {
+            color: #333;
+            text-align: center;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .search-section, .edit-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .search-section {
+            background-color: #e6f3ff;
+            display: flex;
+            align-items: flex-start;
+        }
+        .edit-section {
+            background-color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .field-group {
+            display: inline-block;
+            margin-right: 20px;
+        }
+        label {
+            display: block;
+            margin: 0 0 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"], input[type="checkbox"] {
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="text"]#piso, input[type="text"]#dpto {
+            width: 50px; /* Ajustado para que coincida con el ancho de la etiqueta "Depto:" */
+        }
+        input[type="text"]#horario {
+            width: 100%;
+        }
+        input[type="checkbox"] {
+            width: auto;
+            margin-right: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #buscar-btn {
+            margin-top: 10px; /* Un poco más abajo que las etiquetas */
+        }
+        #guardar-btn {
+            margin-top: 10px;
+        }
+        #resultado {
+            margin-top: 20px;
+        }
+        @media (max-width: 600px) {
+            .form-container {
+                padding: 10px;
+            }
+            .search-section, .edit-section {
+                flex-direction: column;
+            }
+            .field-group {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            button {
+                width: 100%;
+                margin: 10px 0;
+            }
+        }
+    </style>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <div class="form-container">
+        <div class="search-section">
+            <div class="field-group">
+                <label for="piso">Piso:</label>
+                <input type="text" id="piso" placeholder="Ej: 14">
+            </div>
+            <div class="field-group">
+                <label for="dpto">Depto:</label>
+                <input type="text" id="dpto" placeholder="Ej: A">
+            </div>
+            <button id="buscar-btn" onclick="buscarDatos()">Buscar</button>
+        </div>
+
+        <div id="resultado" style="display: none;">
+            <div id="edit-section" class="edit-section">
+                <div class="field-group">
+                    <label for="horario">Horario:</label>
+                    <input type="text" id="horario" maxlength="30">
+                    <label for="serv">Serv:</label>
+                    <input type="checkbox" id="serv">
+                </div>
+                <button id="guardar-btn" onclick="guardarCambios()">Guardar Cambios</button>
+            </div>
+
+            <h3>Limpiar Base de Datos</h3>
+            <button onclick="limpiarBaseDeDatos()">Limpiar Campos (Horario, Serv)</button>
+        </div>
+    </div>
+
+    <script>
+        // Configuración de Firebase (credenciales obtenidas)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAZ7AhR-mzXTu-swy5EAU0NAztXgZO-LQK",
+            authDomain: "editardatos.firebaseapp.com",
+            projectId: "editardatos",
+            storageBucket: "editardatos.appspot.com",
+            messagingSenderId: "970235156511",
+            appId: "1:970235156511:web:8f04ea8983c014a89a9d2a",
+            measurementId: "G-Q6NB1731JR"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        async function buscarDatos() {
+            const piso = document.getElementById('piso').value.trim();
+            const dpto = document.getElementById('dpto').value.trim().toUpperCase();
+
+            // Reiniciar el formulario de edición
+            const resultado = document.getElementById('resultado');
+            const editSection = document.getElementById('edit-section');
+            const formulario = document.getElementById('formulario');
+            editSection.style.display = 'block'; // Aseguramos que la sección de edición esté visible
+            resultado.style.display = 'none'; // Ocultar inicialmente
+            document.getElementById('horario').value = '';
+            document.getElementById('serv').checked = false;
+
+            try {
+                // Buscar el registro en Firestore
+                const querySnapshot = await db.collection('registros')
+                    .where('Piso', '==', piso)
+                    .where('Depto', '==', dpto)
+                    .get();
+
+                let datosEncontrados = null;
+                querySnapshot.forEach(doc => {
+                    datosEncontrados = doc.data();
+                    datosEncontrados.id = doc.id;
+                });
+
+                // Mostrar los datos en el formulario de edición
+                if (datosEncontrados) {
+                    document.getElementById('horario').value = datosEncontrados.Horario || '';
+                    document.getElementById('serv').checked = datosEncontrados.Serv || false;
+                    formulario.dataset.docId = datosEncontrados.id;
+                    resultado.style.display = 'block'; // Mostrar todo lo que está debajo
+                } else {
+                    resultado.style.display = 'none';
+                }
+            } catch (error) {
+                alert('Ocurrió un error al cargar los datos: ' + error.message);
+                resultado.style.display = 'none';
+            }
+        }
+
+        async function guardarCambios() {
+            const piso = document.getElementById('piso').value.trim();
+            const dpto = document.getElementById('dpto').value.trim().toUpperCase();
+            const horario = document.getElementById('horario').value;
+            const serv = document.getElementById('serv').checked;
+
+            const formulario = document.getElementById('formulario');
+            const docId = formulario.dataset.docId;
+
+            if (!docId) {
+                alert('No se encontró el registro para actualizar.');
+                return;
+            }
+
+            // Obtener la fecha y hora actual en el formato DD/MM/YYYY HH:MM:SS
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Meses son 0-11
+            const year = now.getFullYear();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const marcaTemporal = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+
+            try {
+                // Actualizar el documento en Firestore
+                await db.collection('registros').doc(docId).update({
+                    MarcaTemporal: marcaTemporal,
+                    Piso: piso,
+                    Depto: dpto,
+                    Horario: horario || '',
+                    Serv: serv
+                });
+
+                // Ocultar el formulario después de guardar
+                const resultado = document.getElementById('resultado');
+                resultado.style.display = 'none';
+                document.getElementById('horario').value = '';
+                document.getElementById('serv').checked = false;
+                document.getElementInpudocument.getElementById('piso').value = '';
+                document.getElementById('dpto').value = '';
+
+                alert('Cambios guardados exitosamente en la base de datos.');
+            } catch (error) {
+                alert('Ocurrió un error al guardar los cambios: ' + error.message);
+            }
+        }
+
+        async function limpiarBaseDeDatos() {
+            if (!confirm('¿Estás seguro de que deseas limpiar los campos Marca temporal, Horario y Serv de todos los registros? Los campos Piso y Depto se mantendrán sin cambios.')) {
+                return;
+            }
+
+            try {
+                const querySnapshot = await db.collection('registros').get();
+                const batch = db.batch();
+
+                querySnapshot.forEach(doc => {
+                    batch.update(doc.ref, {
+                        MarcaTemporal: '',
+                        Horario: '',
+                        Serv: false
+                    });
+                });
+
+                await batch.commit();
+                alert('Campos Marca temporal, Horario y Serv limpiados exitosamente. Los campos Piso y Depto se han mantenido.');
+            } catch (error) {
+                alert('Ocurrió un error al limpiar la base de datos: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
