@@ -8,137 +8,74 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-        }
-        h3 {
-            color: #333;
-            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
         .form-container {
-            max-width: 600px;
-            margin: 0 auto;
+            background-color: white;
             padding: 20px;
-            background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
         }
-        .search-section, .edit-section {
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
+        h1 {
+            text-align: center;
+            color: #333;
         }
-        .search-section {
-            background-color: #e6f3ff;
-            display: flex;
-            align-items: flex-start;
-        }
-        .edit-section {
-            background-color: #fff;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-        .field-group {
-            display: inline-block;
-            margin-right: 20px;
-        }
-        label {
-            display: block;
-            margin: 0 0 5px;
-            font-weight: bold;
+        h3 {
             color: #555;
         }
-        input[type="text"], input[type="checkbox"] {
+        .field-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        label {
+            margin-right: 10px;
+            color: #555;
+            width: 100px;
+        }
+        input[type="text"] {
             padding: 8px;
-            margin: 5px 0;
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
             border-radius: 4px;
-            box-sizing: border-box;
-        }
-        input[type="text"]#piso, input[type="text"]#dpto {
-            width: 50px;
-        }
-        input[type="text"]#horario {
             width: 100%;
+            max-width: 150px;
         }
         input[type="checkbox"] {
-            width: auto;
-            margin-right: 5px;
+            margin-left: 10px;
         }
         button {
             padding: 10px 20px;
-            background-color: #007BFF;
+            background-color: #007bff;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            margin-top: 10px;
+            display: block;
+            width: 100%;
         }
         button:hover {
             background-color: #0056b3;
         }
-        #buscar-btn {
-            margin-top: 10px;
+        .search-section {
+            margin-bottom: 20px;
         }
-        #guardar-btn {
-            margin-top: 10px;
-        }
-        #resultado {
-            margin-top: 20px;
-        }
-        @media (max-width: 600px) {
-            .form-container {
-                padding: 10px;
-            }
-            .search-section, .edit-section {
-                flex-direction: column;
-            }
-            .field-group {
-                margin-right: 0;
-                margin-bottom: 10px;
-            }
-            button {
-                width: 100%;
-                margin: 10px 0;
-            }
+        .edit-section {
+            margin-bottom: 20px;
         }
     </style>
+
     <!-- Actualizamos a la versión 11.6.0 compatible -->
     <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore-compat.js"></script>
-</head>
-<body>
-    <div class="form-container">
-        <div class="search-section">
-            <div class="field-group">
-                <label for="piso">Piso:</label>
-                <input type="text" id="piso" placeholder="Ej: 14">
-            </div>
-            <div class="field-group">
-                <label for="dpto">Depto:</label>
-                <input type="text" id="dpto" placeholder="Ej: A">
-            </div>
-            <button id="buscar-btn" onclick="buscarDatos()">Buscar</button>
-        </div>
-
-        <div id="resultado" style="display: none;">
-            <div id="edit-section" class="edit-section">
-                <div class="field-group">
-                    <label for="horario">Horario:</label>
-                    <input type="text" id="horario" maxlength="30">
-                    <label for="serv">Serv:</label>
-                    <input type="checkbox" id="serv">
-                </div>
-                <button id="guardar-btn" onclick="guardarCambios()">Guardar Cambios</button>
-            </div>
-
-            <h3>Limpiar Base de Datos</h3>
-            <button onclick="limpiarBaseDeDatos()">Limpiar Campos (Horario, Serv)</button>
-        </div>
-    </div>
 
     <script>
         // Nuevo firebaseConfig proporcionado por Firebase
@@ -261,5 +198,38 @@
             }
         }
     </script>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Editar Datos</h1>
+        <div class="search-section">
+            <div class="field-group">
+                <label for="piso">Piso:</label>
+                <input type="text" id="piso" placeholder="Ej: 14">
+            </div>
+            <div class="field-group">
+                <label for="dpto">Depto:</label>
+                <input type="text" id="dpto" placeholder="Ej: A">
+            </div>
+            <button id="buscar-btn" onclick="buscarDatos()">Buscar</button>
+        </div>
+
+        <div id="resultado" style="display: none;">
+            <div id="formulario">
+                <div id="edit-section" class="edit-section">
+                    <div class="field-group">
+                        <label for="horario">Horario:</label>
+                        <input type="text" id="horario" maxlength="30">
+                        <label for="serv">Serv:</label>
+                        <input type="checkbox" id="serv">
+                    </div>
+                    <button id="guardar-btn" onclick="guardarCambios()">Guardar Cambios</button>
+                </div>
+
+                <h3>Limpiar Base de Datos</h3>
+                <button onclick="limpiarBaseDeDatos()">Limpiar Campos (Horario, Serv)</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
