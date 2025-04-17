@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- Forzar actualización para GitHub Pages -->
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -8,77 +7,162 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            margin: 20px;
+            background-color: #f4f4f4;
         }
         .form-container {
-            background-color: white;
+            max-width: 600px;
+            margin: 0 auto;
             padding: 20px;
+            background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 500px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-        h1 {
-            text-align: center;
-            color: #333;
+        .search-section, .edit-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
         }
-        h3 {
-            color: #555;
+        .search-section {
+            background-color: #e6f3ff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .edit-section {
+            background-color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
         }
         .field-group {
             display: flex;
             align-items: center;
-            margin-bottom: 15px;
+            margin-right: 10px;
+        }
+        .field-group.depto {
+            margin-left: -5px;
         }
         label {
-            margin-right: 10px;
+            display: block;
+            margin-right: 5px;
+            font-weight: bold;
             color: #555;
-            width: 100px;
         }
-        input[type="text"] {
+        input[type="text"], input[type="checkbox"] {
             padding: 8px;
-            border: 1px solid #ddd;
+            margin: 5px 0;
+            border: 1px solid #ccc;
             border-radius: 4px;
-            width: 100%;
-            max-width: 150px;
+            box-sizing: border-box;
+        }
+        input[type="text"]#piso, input[type="text"]#dpto {
+            width: 53px;
+        }
+        input[type="text"]#horario {
+            width: 100%; /* Ajuste responsivo */
+            max-width: 200px; /* Máximo ancho para pantallas grandes */
         }
         input[type="checkbox"] {
-            margin-left: 10px;
+            width: auto;
+            margin-right: 5px;
         }
         button {
             padding: 10px 20px;
-            background-color: #007bff;
+            background-color: #007BFF;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            margin-top: 10px;
-            display: block;
-            width: 100%;
+            transition: background-color 0.3s;
         }
         button:hover {
             background-color: #0056b3;
         }
-        .search-section {
-            margin-bottom: 20px;
+        #buscar-btn {
+            margin-top: 0;
         }
-        .edit-section {
-            margin-bottom: 20px;
+        #guardar-btn {
+            margin-top: 0;
+        }
+        #resultado {
+            margin-top: 20px;
+            display: none;
+        }
+        .edit-left {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .horario-group, .serv-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 480px) {
+            .search-section, .edit-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .field-group, .edit-left, .horario-group, .serv-group {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .edit-left {
+                width: 100%; /* Asegurar que no desborde en pantallas pequeñas */
+            }
+            .field-group.depto {
+                margin-left: 0;
+            }
+            button {
+                width: 100%;
+                margin-top: 10px;
+            }
+            #guardar-btn {
+                margin-top: 10px;
+            }
         }
     </style>
-
-    <!-- Actualizamos a la versión 11.6.0 compatible -->
     <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <div class="form-container" id="formulario">
+        <div class="search-section">
+            <div class="field-group">
+                <label for="piso">Piso:</label>
+                <input type="text" id="piso" placeholder="Ej: 14">
+            </div>
+            <div class="field-group depto">
+                <label for="dpto">Depto:</label>
+                <input type="text" id="dpto" placeholder="Ej: A">
+            </div>
+            <button id="buscar-btn" onclick="buscarDatos()">Buscar</button>
+        </div>
+
+        <div id="resultado">
+            <div class="edit-section">
+                <div class="edit-left">
+                    <div class="horario-group">
+                        <label for="horario">Horario:</label>
+                        <input type="text" id="horario" maxlength="30">
+                    </div>
+                    <div class="serv-group">
+                        <label for="serv">Serv:</label>
+                        <input type="checkbox" id="serv">
+                    </div>
+                </div>
+                <button id="guardar-btn" onclick="guardarCambios()">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // Nuevo firebaseConfig proporcionado por Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyAMUS7WoP8P1aiSsdYs-pIsebqGlohviFA",
             authDomain: "editar-datos-2025.firebaseapp.com",
@@ -88,26 +172,43 @@
             appId: "1:804732249379:web:bd329186fffac49e7f9896"
         };
 
-        // Inicialización compatible con el formato no modular
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        console.log('Firebase y Firestore inicializados correctamente');
 
         async function buscarDatos() {
             const piso = document.getElementById('piso').value.trim();
             const dpto = document.getElementById('dpto').value.trim().toUpperCase();
-
             const resultado = document.getElementById('resultado');
-            const editSection = document.getElementById('edit-section');
-            editSection.style.display = 'block';
-            resultado.style.display = 'none';
+            const formulario = document.getElementById('formulario');
+
+            if (!piso || !dpto) {
+                alert('Por favor, ingrese Piso y Depto.');
+                return;
+            }
+
+            // Limpiar y ocultar formulario editable
             document.getElementById('horario').value = '';
             document.getElementById('serv').checked = false;
+            resultado.style.display = 'none';
+
+            if (!formulario) {
+                alert('Error: Elemento "formulario" no encontrado en el DOM.');
+                return;
+            }
 
             try {
+                console.log(`Buscando Piso: ${piso}, Depto: ${dpto}`);
                 const querySnapshot = await db.collection('registros')
                     .where('Piso', '==', piso)
                     .where('Depto', '==', dpto)
                     .get();
+
+                if (querySnapshot.empty) {
+                    console.log('No se encontraron documentos.');
+                    alert('No se encontraron registros para Piso: ' + piso + ', Depto: ' + dpto);
+                    return;
+                }
 
                 let datosEncontrados = null;
                 querySnapshot.forEach(doc => {
@@ -116,16 +217,15 @@
                 });
 
                 if (datosEncontrados) {
+                    console.log('Documento encontrado:', datosEncontrados);
                     document.getElementById('horario').value = datosEncontrados.Horario || '';
                     document.getElementById('serv').checked = datosEncontrados.Serv || false;
-                    document.getElementById('formulario').dataset.docId = datosEncontrados.id;
+                    formulario.dataset.docId = datosEncontrados.id;
                     resultado.style.display = 'block';
-                } else {
-                    resultado.style.display = 'none';
                 }
             } catch (error) {
+                console.error('Error al cargar los datos:', error);
                 alert('Ocurrió un error al cargar los datos: ' + error.message);
-                resultado.style.display = 'none';
             }
         }
 
@@ -134,102 +234,62 @@
             const dpto = document.getElementById('dpto').value.trim().toUpperCase();
             const horario = document.getElementById('horario').value;
             const serv = document.getElementById('serv').checked;
-
             const formulario = document.getElementById('formulario');
-            const docId = formulario.dataset.docId;
+            const docId = formulario ? formulario.dataset.docId : null;
 
             if (!docId) {
                 alert('No se encontró el registro para actualizar.');
                 return;
             }
 
-            const now = new Date();
-            const day = String(now.getDate()).padStart(2, '0');
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const year = now.getFullYear();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            const marcaTemporal = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-
             try {
-                await db.collection('registros').doc(docId).update({
-                    MarcaTemporal: marcaTemporal,
+                console.log(`Actualizando documento ${docId}`);
+                const docRef = db.collection('registros').doc(docId);
+                const docSnap = await docRef.get();
+
+                const docData = docSnap.data();
+                if (!docData) {
+                    alert('Error: El documento ya no existe.');
+                    return;
+                }
+
+                const ahora = new Date().toLocaleString('es-ES', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                }).replace(',', '');
+
+                const datosActualizados = {
+                    ...docData,
+                    MarcaTemporal: ahora,
                     Piso: piso,
                     Depto: dpto,
                     Horario: horario || '',
                     Serv: serv
-                });
+                };
 
+                await docRef.set(datosActualizados);
+                console.log('Documento actualizado con éxito');
+
+                // Reiniciar formulario
                 const resultado = document.getElementById('resultado');
                 resultado.style.display = 'none';
-                document.getElementById('horario').value = '';
-                document.getElementById('serv').checked = false;
                 document.getElementById('piso').value = '';
                 document.getElementById('dpto').value = '';
+                document.getElementById('horario').value = '';
+                document.getElementById('serv').checked = false;
+                delete formulario.dataset.docId;
 
                 alert('Cambios guardados exitosamente en la base de datos.');
             } catch (error) {
+                console.error('Error al guardar los cambios:', error);
                 alert('Ocurrió un error al guardar los cambios: ' + error.message);
             }
         }
-
-        async function limpiarBaseDeDatos() {
-            if (!confirm('¿Estás seguro de que deseas limpiar los campos Marca temporal, Horario y Serv de todos los registros? Los campos Piso y Depto se mantendrán sin cambios.')) {
-                return;
-            }
-
-            try {
-                const querySnapshot = await db.collection('registros').get();
-                const batch = db.batch();
-
-                querySnapshot.forEach(doc => {
-                    batch.update(doc.ref, {
-                        MarcaTemporal: '',
-                        Horario: '',
-                        Serv: false
-                    });
-                });
-
-                await batch.commit();
-                alert('Campos Marca temporal, Horario y Serv limpiados exitosamente. Los campos Piso y Depto se han mantenido.');
-            } catch (error) {
-                alert('Ocurrió un error al limpiar la base de datos: ' + error.message);
-            }
-        }
     </script>
-</head>
-<body>
-    <div class="form-container">
-        <h1>Editar Datos</h1>
-        <div class="search-section">
-            <div class="field-group">
-                <label for="piso">Piso:</label>
-                <input type="text" id="piso" placeholder="Ej: 14">
-            </div>
-            <div class="field-group">
-                <label for="dpto">Depto:</label>
-                <input type="text" id="dpto" placeholder="Ej: A">
-            </div>
-            <button id="buscar-btn" onclick="buscarDatos()">Buscar</button>
-        </div>
-
-        <div id="resultado" style="display: none;">
-            <div id="formulario">
-                <div id="edit-section" class="edit-section">
-                    <div class="field-group">
-                        <label for="horario">Horario:</label>
-                        <input type="text" id="horario" maxlength="30">
-                        <label for="serv">Serv:</label>
-                        <input type="checkbox" id="serv">
-                    </div>
-                    <button id="guardar-btn" onclick="guardarCambios()">Guardar Cambios</button>
-                </div>
-
-                <h3>Limpiar Base de Datos</h3>
-                <button onclick="limpiarBaseDeDatos()">Limpiar Campos (Horario, Serv)</button>
-            </div>
-        </div>
-    </div>
 </body>
 </html>
