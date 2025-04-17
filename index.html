@@ -3,165 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Datos</title>
+    <title>Reserva para fumigación</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 20px 0; /* Padding solo arriba y abajo */
             background-color: #f4f4f4;
+            min-height: 100vh;
         }
-        .form-container {
-            max-width: 600px;
-            margin: 0 auto;
+        .container {
+            background: white;
             padding: 20px;
-            background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 300px; /* Ajustado para coincidir con el ancho del formulario (260px + 40px de padding) */
+            margin: 20px auto; /* Centrado horizontalmente y margen superior */
         }
-        .search-section, .edit-section {
+        h1 {
+            font-size: 1.5em;
             margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
+            text-align: center;
         }
-        .search-section {
-            background-color: #e6f3ff;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
+        table {
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            width: 100%;
         }
-        .edit-section {
-            background-color: #fff;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
+        td {
+            border: 0;
+            padding: 5px;
         }
-        .field-group {
-            display: flex;
-            align-items: center;
-            margin-right: 10px;
+        td:nth-child(1),
+        td:nth-child(2) {
+            width: 80px;
+            text-align: left;
         }
-        .field-group.depto {
-            margin-left: -5px;
+        td:nth-child(3) {
+            width: 100px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            display: block;
+            text-align: left;
         }
         label {
-            display: block;
-            margin-right: 5px;
-            font-weight: bold;
-            color: #555;
+            display: inline-block;
+            width: 80px;
+            text-align: left;
         }
-        input[type="text"], input[type="checkbox"] {
+        input[type="text"]#piso,
+        input[type="text"]#depto {
+            width: 80px;
             padding: 8px;
-            margin: 5px 0;
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
         }
-        input[type="text"]#piso, input[type="text"]#dpto {
-            width: 53px;
-        }
         input[type="text"]#horario {
-            width: 100%; /* Ajuste responsivo */
-            max-width: 200px; /* Máximo ancho para pantallas grandes */
+            width: 150px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            display: inline-block;
         }
         input[type="checkbox"] {
-            width: auto;
-            margin-right: 5px;
+            width: 20px;
+            height: 20px;
+            margin: 0;
+            vertical-align: middle;
         }
-        button {
-            padding: 10px 20px;
-            background-color: #007BFF;
+        button#buscar {
+            background-color: #4CAF50;
             color: white;
+            padding: 10px 15px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            width: 100px;
+        }
+        button#guardar {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 170px;
+            margin: 10px 0;
+            display: block;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #45a049;
         }
-        #buscar-btn {
-            margin-top: 0;
+        #mensaje-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1em;
+            display: none;
+            z-index: 1000;
+            text-align: center;
+            max-width: 80%;
         }
-        #guardar-btn {
-            margin-top: 0;
-        }
-        #resultado {
-            margin-top: 20px;
+        .hidden {
             display: none;
         }
-        .edit-left {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        .horario-group, .serv-group {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        @media (max-width: 480px) {
-            .search-section, .edit-section {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .field-group, .edit-left, .horario-group, .serv-group {
-                width: 100%;
-                margin-bottom: 10px;
-            }
-            .edit-left {
-                width: 100%; /* Asegurar que no desborde en pantallas pequeñas */
-            }
-            .field-group.depto {
-                margin-left: 0;
-            }
-            button {
-                width: 100%;
-                margin-top: 10px;
-            }
-            #guardar-btn {
-                margin-top: 10px;
-            }
-        }
     </style>
-    <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
-    <div class="form-container" id="formulario">
-        <div class="search-section">
-            <div class="field-group">
-                <label for="piso">Piso:</label>
-                <input type="text" id="piso" placeholder="Ej: 14">
+    <div class="container">
+        <h1>Reserva para fumigación</h1>
+        <div id="mensaje-container"></div>
+        <table>
+            <tr>
+                <td><label for="piso">Piso:</label></td>
+                <td><label for="depto">Depto:</label></td>
+                <td rowspan="2"><button id="buscar" onclick="buscarRegistro()">Buscar</button></td>
+            </tr>
+            <tr>
+                <td><input type="text" id="piso" placeholder="Ej: 14"></td>
+                <td><input type="text" id="depto" placeholder="Ej: A"></td>
+            </tr>
+        </table>
+        <div id="editarCampos" class="hidden">
+            <div class="form-group">
+                <label for="horario">Horario:</label>
+                <input type="text" id="horario" placeholder="Ej: De 10 a 13:00">
             </div>
-            <div class="field-group depto">
-                <label for="dpto">Depto:</label>
-                <input type="text" id="dpto" placeholder="Ej: A">
+            <div class="form-group">
+                <label for="serv">Serv:</label>
+                <input type="checkbox" id="serv">
             </div>
-            <button id="buscar-btn" onclick="buscarDatos()">Buscar</button>
-        </div>
-
-        <div id="resultado">
-            <div class="edit-section">
-                <div class="edit-left">
-                    <div class="horario-group">
-                        <label for="horario">Horario:</label>
-                        <input type="text" id="horario" maxlength="30">
-                    </div>
-                    <div class="serv-group">
-                        <label for="serv">Serv:</label>
-                        <input type="checkbox" id="serv">
-                    </div>
-                </div>
-                <button id="guardar-btn" onclick="guardarCambios()">Guardar Cambios</button>
-            </div>
+            <button id="guardar" onclick="guardarCambios()">Guardar Cambios</button>
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore-compat.js"></script>
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyAMUS7WoP8P1aiSsdYs-pIsebqGlohviFA",
@@ -174,120 +162,81 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        console.log('Firebase y Firestore inicializados correctamente');
 
-        async function buscarDatos() {
-            const piso = document.getElementById('piso').value.trim();
-            const dpto = document.getElementById('dpto').value.trim().toUpperCase();
-            const resultado = document.getElementById('resultado');
-            const formulario = document.getElementById('formulario');
+        const mensajeContainer = document.getElementById('mensaje-container');
+        const editarCampos = document.getElementById('editarCampos');
+        const pisoInput = document.getElementById('piso');
+        const deptoInput = document.getElementById('depto');
 
-            if (!piso || !dpto) {
-                alert('Por favor, ingrese Piso y Depto.');
-                return;
-            }
+        function mostrarMensaje(mensaje) {
+            mensajeContainer.textContent = mensaje;
+            mensajeContainer.style.backgroundColor = 'rgba(255, 0, 0, 0.8)';
+            mensajeContainer.style.display = 'block';
+            setTimeout(() => {
+                mensajeContainer.style.display = 'none';
+                editarCampos.classList.add('hidden');
+                pisoInput.value = '';
+                deptoInput.value = '';
+            }, 3000);
+        }
 
-            // Limpiar y ocultar formulario editable
-            document.getElementById('horario').value = '';
-            document.getElementById('serv').checked = false;
-            resultado.style.display = 'none';
+        async function buscarRegistro() {
+            const piso = pisoInput.value.trim();
+            const depto = deptoInput.value.trim().toUpperCase();
 
-            if (!formulario) {
-                alert('Error: Elemento "formulario" no encontrado en el DOM.');
+            if (!piso || !depto) {
+                mostrarMensaje('Por favor, ingrese Piso y Depto.');
                 return;
             }
 
             try {
-                console.log(`Buscando Piso: ${piso}, Depto: ${dpto}`);
                 const querySnapshot = await db.collection('registros')
                     .where('Piso', '==', piso)
-                    .where('Depto', '==', dpto)
+                    .where('Depto', '==', depto)
                     .get();
 
                 if (querySnapshot.empty) {
-                    console.log('No se encontraron documentos.');
-                    alert('No se encontraron registros para Piso: ' + piso + ', Depto: ' + dpto);
+                    mostrarMensaje(`El par Piso: ${piso}, Depto: ${depto} no existe.`);
+                    editarCampos.classList.add('hidden');
                     return;
                 }
 
-                let datosEncontrados = null;
-                querySnapshot.forEach(doc => {
-                    datosEncontrados = doc.data();
-                    datosEncontrados.id = doc.id;
-                });
-
-                if (datosEncontrados) {
-                    console.log('Documento encontrado:', datosEncontrados);
-                    document.getElementById('horario').value = datosEncontrados.Horario || '';
-                    document.getElementById('serv').checked = datosEncontrados.Serv || false;
-                    formulario.dataset.docId = datosEncontrados.id;
-                    resultado.style.display = 'block';
-                }
+                const doc = querySnapshot.docs[0];
+                document.getElementById('horario').value = doc.data().Horario || '';
+                document.getElementById('serv').checked = doc.data().Serv || false;
+                editarCampos.classList.remove('hidden');
             } catch (error) {
-                console.error('Error al cargar los datos:', error);
-                alert('Ocurrió un error al cargar los datos: ' + error.message);
+                mostrarMensaje('Error al buscar el registro: ' + error.message);
             }
         }
 
         async function guardarCambios() {
-            const piso = document.getElementById('piso').value.trim();
-            const dpto = document.getElementById('dpto').value.trim().toUpperCase();
-            const horario = document.getElementById('horario').value;
+            const piso = pisoInput.value.trim();
+            const depto = deptoInput.value.trim().toUpperCase();
+            const horario = document.getElementById('horario').value.trim();
             const serv = document.getElementById('serv').checked;
-            const formulario = document.getElementById('formulario');
-            const docId = formulario ? formulario.dataset.docId : null;
-
-            if (!docId) {
-                alert('No se encontró el registro para actualizar.');
-                return;
-            }
 
             try {
-                console.log(`Actualizando documento ${docId}`);
-                const docRef = db.collection('registros').doc(docId);
-                const docSnap = await docRef.get();
+                const querySnapshot = await db.collection('registros')
+                    .where('Piso', '==', piso)
+                    .where('Depto', '==', depto)
+                    .get();
 
-                const docData = docSnap.data();
-                if (!docData) {
-                    alert('Error: El documento ya no existe.');
+                if (querySnapshot.empty) {
+                    mostrarMensaje('Registro no encontrado.');
                     return;
                 }
 
-                const ahora = new Date().toLocaleString('es-ES', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: false
-                }).replace(',', '');
+                const doc = querySnapshot.docs[0];
+                await db.collection('registros').doc(doc.id).update({
+                    Horario: horario,
+                    Serv: serv,
+                    MarcaTemporal: new Date().toLocaleString('es-AR')
+                });
 
-                const datosActualizados = {
-                    ...docData,
-                    MarcaTemporal: ahora,
-                    Piso: piso,
-                    Depto: dpto,
-                    Horario: horario || '',
-                    Serv: serv
-                };
-
-                await docRef.set(datosActualizados);
-                console.log('Documento actualizado con éxito');
-
-                // Reiniciar formulario
-                const resultado = document.getElementById('resultado');
-                resultado.style.display = 'none';
-                document.getElementById('piso').value = '';
-                document.getElementById('dpto').value = '';
-                document.getElementById('horario').value = '';
-                document.getElementById('serv').checked = false;
-                delete formulario.dataset.docId;
-
-                alert('Cambios guardados exitosamente en la base de datos.');
+                mostrarMensaje('Cambios guardados exitosamente.');
             } catch (error) {
-                console.error('Error al guardar los cambios:', error);
-                alert('Ocurrió un error al guardar los cambios: ' + error.message);
+                mostrarMensaje('Error al guardar los cambios: ' + error.message);
             }
         }
     </script>
