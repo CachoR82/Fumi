@@ -18,7 +18,7 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 300px; /* Ajustado para coincidir con el ancho del formulario (260px + 40px de padding) */
+            max-width: 320px; /* Aumentado ligeramente para acomodar el nuevo ancho */
             margin: 20px auto; /* Centrado horizontalmente y margen superior */
         }
         h1 {
@@ -35,9 +35,12 @@
             border: 0;
             padding: 5px;
         }
-        td:nth-child(1),
-        td:nth-child(2) {
+        td:nth-child(1) {
             width: 80px;
+            text-align: left;
+        }
+        td:nth-child(2) {
+            width: 100px; /* Aumentado para alinearse con el select */
             text-align: left;
         }
         td:nth-child(3) {
@@ -55,13 +58,22 @@
             width: 80px;
             text-align: left;
         }
-        input[type="text"]#piso,
-        input[type="text"]#depto {
+        input[type="text"]#piso {
             width: 80px;
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
+            background-color: #fff; /* Fondo blanco explícito */
+        }
+        select#depto {
+            width: 100px; /* Aumentado para mostrar el texto completo */
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: #fff; /* Fondo blanco para coincidir con el input */
+            color: #000; /* Color del texto para consistencia */
         }
         input[type="text"]#horario {
             width: 150px;
@@ -70,6 +82,7 @@
             border-radius: 4px;
             box-sizing: border-box;
             display: inline-block;
+            background-color: #fff; /* Fondo blanco explícito */
         }
         input[type="checkbox"] {
             width: 20px;
@@ -132,7 +145,15 @@
             </tr>
             <tr>
                 <td><input type="text" id="piso" placeholder="Ej: 14"></td>
-                <td><input type="text" id="depto" placeholder="Ej: A"></td>
+                <td>
+                    <select id="depto">
+                        <option value="" disabled selected>Depto</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                    </select>
+                </td>
             </tr>
         </table>
         <div id="editarCampos" class="hidden">
@@ -175,8 +196,8 @@
             setTimeout(() => {
                 mensajeContainer.style.display = 'none';
                 editarCampos.classList.add('hidden');
-                pisoInput.value = '';
-                deptoInput.value = '';
+                // Eliminado: pisoInput.value = '';
+                // Eliminado: deptoInput.value = '';
             }, 3000);
         }
 
