@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla Estructura Final</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 60%;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+            border: none;
+        }
+        td {
+            border: none;
+            padding: 10px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        td:nth-child(1) {
+            width: 30%;
+        }
+        td:nth-child(2) {
+            width: 10%;
+        }
+        td:nth-child(3) {
+            width: 60%;
+            text-align: left;
+        }
+        tr:nth-child(2) td:nth-child(1),
+        tr:nth-child(3) td:nth-child(1) {
+            width: 10%;
+        }
+        tr:nth-child(2) td:nth-child(2),
+        tr:nth-child(3) td:nth-child(2) {
+            width: 60%;
+            text-align: left;
+        }
+        tr:first-child td:nth-child(2) {
+            border-top: 1px solid black;
+            border-left: 1px solid black;
+        }
+        tr:nth-child(2) td:nth-child(1) {
+            border-left: 1px solid black;
+        }
+        tr:last-child td:nth-child(1) {
+            border-left: 1px solid black;
+            border-bottom: 1px solid black;
+        }
+        tr:first-child td:nth-child(3) {
+            border-top: 1px solid black;
+            border-right: 1px solid black;
+        }
+        tr:nth-child(2) td:nth-child(2) {
+            border-right: 1px solid black;
+        }
+        tr:last-child td:nth-child(2) {
+            border-right: 1px solid black;
+            border-bottom: 1px solid black;
+        }
+        select, button {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #f0f0f0;
+            cursor: pointer;
+            text-align: center;
+        }
+        button:hover {
+            background-color: #e0e0e0;
+        }
+        .torre-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        select option[value=""] {
+            display: none;
+        }
+        select:invalid {
+            color: transparent;
+        }
+        #errorMensaje {
+            display: none;
+            color: red;
+            font-size: 24px;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px auto;
+            width: 60%;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+        #errorMensaje.hidden {
+            opacity: 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <tr>
+            <td rowspan="3">
+                <span class="torre-label">Torre</span>
+                <select name="Torre" id="torreSelect">
+                    <option value="" selected></option>
+                    <option value="1920">1920</option>
+                    <option value="1960">1960</option>
+                </select>
+            </td>
+            <td>1)</td>
+            <td><button onclick="handleButtonClick('fumigador')">Informe Fumigador</button></td>
+        </tr>
+        <tr>
+            <td>2)</td>
+            <td><button onclick="handleButtonClick('completo')">Informe Completo</button></td>
+        </tr>
+        <tr>
+            <td>3)</td>
+            <td><button onclick="handleButtonClick('inicializar')">Inicializar BD</button></td>
+        </tr>
+    </table>
+    <div id="errorMensaje"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore-compat.js"></script>
+    <script>
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAMUS7WoP8P1aiSsdYs-pIsebqGlohviFA",
+            authDomain: "editar-datos-2025.firebaseapp.com",
+            projectId: "editar-datos-2025",
+            storageBucket: "editar-datos-2025.firebasestorage.app",
+            messagingSenderId: "804732249379",
+            appId: "1:804732249379:web:bd329186fffac49e7f9896"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Cola de mensajes y estado
+        let mensajeCola = [];
+        let mostrandoMensaje = false;
+
+        // Función para mostrar un mensaje temporal
+        function mostrarMensaje(texto, duracion = 2000) {
+            mensajeCola.push({ texto, duracion });
+            mostrarSiguienteMensaje();
+        }
+
+        // Función para mostrar el siguiente mensaje en la cola
+        function mostrarSiguienteMensaje() {
+            if (mostrandoMensaje || mensajeCola.length === 0) {
+                return;
+            }
+
+            mostrandoMensaje = true;
+            const { texto, duracion } = mensajeCola.shift();
+            const errorMensaje = document.getElementById('errorMensaje');
+
+            // Mostrar mensaje
+            errorMensaje.textContent = texto;
+            errorMensaje.style.display = 'block';
+            errorMensaje.style.opacity = '1';
+
+            // Ocultar después de la duración especificada
+            setTimeout(() => {
+                errorMensaje.style.opacity = '0';
+                setTimeout(() => {
+                    errorMensaje.style.display = 'none';
+                    errorMensaje.textContent = ''; // Limpiar texto
+                    mostrandoMensaje = false;
+                    mostrarSiguienteMensaje(); // Mostrar el siguiente
+                }, 300); // Tiempo de desvanecimiento
+            }, duracion);
+        }
+
+        // Función para manejar el clic en los botones
+        async function handleButtonClick(boton) {
+            const torre = document.getElementById('torreSelect').value;
+
+            if (!torre) {
+                // Mostrar mensaje de error si no hay torre seleccionada
+                mostrarMensaje('Selecciona una Torre');
+                return;
+            }
+
+            if (boton === 'completo') {
+                try {
+                    // Consultar registros en Firestore, ordenados por Piso y Depto
+                    const querySnapshot = await db.collection('registros')
+                        .where('Torre', '==', torre)
+                        .orderBy('Piso')
+                        .orderBy('Depto')
+                        .get();
+
+                    // Definir los nombres de los campos en el orden especificado
+                    const campos = ['Torre', 'MarcaTemporal', 'Piso', 'Depto', 'Horario', 'Serv', 'Obs'];
+
+                    // Formatear datos
+                    let texto = campos.join('\t') + '\n';
+                    querySnapshot.forEach(doc => {
+                        const data = doc.data();
+                        const registro = [
+                            data.Torre || '',
+                            data.MarcaTemporal || '',
+                            data.Piso || '',
+                            data.Depto || '',
+                            data.Horario || '',
+                            data.Serv !== undefined ? (data.Serv ? 'Sí' : 'No') : '',
+                            data.Obs || ''
+                        ];
+                        texto += registro.join('\t') + '\n';
+                    });
+
+                    // Copiar al portapapeles
+                    await navigator.clipboard.writeText(texto);
+                    mostrarMensaje('Tabla completa copiada al portapapeles');
+                } catch (error) {
+                    mostrarMensaje('Error al consultar la base de datos: ' + error.message);
+                }
+            } else if (boton === 'fumigador') {
+                try {
+                    // Consultar registros en Firestore con filtro por Torre y Serv
+                    const querySnapshot = await db.collection('registros')
+                        .where('Torre', '==', torre)
+                        .where('Serv', '==', true)
+                        .orderBy('Piso')
+                        .orderBy('Depto')
+                        .get();
+
+                    if (querySnapshot.empty) {
+                        // Mostrar mensaje si no hay registros
+                        mostrarMensaje('Servicio no requerido');
+                        return;
+                    }
+
+                    // Definir los nombres de los campos para el informe fumigador
+                    const campos = ['Torre', 'Piso', 'Depto', 'Horario', 'Obs'];
+
+                    // Formatear datos
+                    let texto = campos.join('\t') + '\n';
+                    querySnapshot.forEach(doc => {
+                        const data = doc.data();
+                        const registro = [
+                            data.Torre || '',
+                            data.Piso || '',
+                            data.Depto || '',
+                            data.Horario || '',
+                            data.Obs || ''
+                        ];
+                        texto += registro.join('\t') + '\n';
+                    });
+
+                    // Copiar al portapapeles
+                    await navigator.clipboard.writeText(texto);
+                    mostrarMensaje('Servicios requeridos copiados al portapapeles');
+                } catch (error) {
+                    mostrarMensaje('Error al consultar la base de datos: ' + error.message);
+                }
+            } else if (boton === 'inicializar') {
+                try {
+                    // Mostrar mensaje de inicio
+                    mostrarMensaje('Inicialización en progreso');
+
+                    // Consultar registros en Firestore
+                    const querySnapshot = await db.collection('registros')
+                        .where('Torre', '==', torre)
+                        .get();
+
+                    // Crear un lote
+                    const batch = db.batch();
+                    let contador = 0;
+
+                    // Agregar actualizaciones al lote
+                    querySnapshot.forEach(doc => {
+                        batch.update(db.collection('registros').doc(doc.id), {
+                            MarcaTemporal: '',
+                            Horario: '',
+                            Serv: false,
+                            Obs: ''
+                        });
+                        contador++;
+                    });
+
+                    // Ejecutar el lote
+                    await batch.commit();
+
+                    // Mostrar mensaje de confirmación con duración de 3 segundos
+                    mostrarMensaje(`Se inicializaron ${contador} registros`, 3000);
+                } catch (error) {
+                    mostrarMensaje('Error al inicializar la base de datos: ' + error.message);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
