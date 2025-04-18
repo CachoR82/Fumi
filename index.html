@@ -213,10 +213,11 @@
               const querySnapshot = await db.collection('registros')
                   .where('Piso', '==', piso)
                   .where('Depto', '==', depto)
+                  .where('Torre', '==', '1920') // Filtrar por Torre
                   .get();
 
               if (querySnapshot.empty) {
-                  mostrarMensaje(`El par Piso: ${piso}, Depto: ${depto} no existe.`);
+                  mostrarMensaje(`El par Piso: ${piso}, Depto: ${depto}, Torre: 1920 no existe.`);
                   editarCampos.classList.add('hidden');
                   return;
               }
@@ -232,10 +233,11 @@
 
       async function consultaFalsa() {
           try {
-              // Buscar el registro con Piso=1 y Depto=A (siempre existe)
+              // Buscar el registro con Piso=1, Depto=A y Torre=1920 (siempre existe)
               const querySnapshot = await db.collection('registros')
                   .where('Piso', '==', '1')
                   .where('Depto', '==', 'A')
+                  .where('Torre', '==', '1920') // Filtrar por Torre
                   .get();
 
               const doc = querySnapshot.docs[0];
@@ -249,7 +251,6 @@
                   Obs: nuevasObservaciones
               });
           } catch (error) {
-              // Manejo de errores improbables (por robustez)
               console.log('Error en consulta falsa:', error.message);
           }
       }
@@ -264,6 +265,7 @@
               const querySnapshot = await db.collection('registros')
                   .where('Piso', '==', piso)
                   .where('Depto', '==', depto)
+                  .where('Torre', '==', '1920') // Filtrar por Torre
                   .get();
 
               if (querySnapshot.empty) {
