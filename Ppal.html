@@ -73,11 +73,6 @@
             text-align: center;
         }
 
-        .left-container label span {
-            display: block;
-            font-weight: normal;
-        }
-
         .left-container select {
             width: 80px;
             padding: 5px;
@@ -87,6 +82,23 @@
             font-size: 14px;
             background-color: #f9f9f9;
             min-width: 0;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="5" viewBox="0 0 10 5"><path d="M0 0h10L5 5z" fill="black"/></svg>') no-repeat right 10px center;
+            background-size: 10px;
+        }
+
+        .left-container select option {
+            font-size: 14px;
+        }
+
+        .left-container select:invalid {
+            color: gray;
+        }
+
+        .left-container select option[value=""] {
+            display: none;
         }
 
         .right-container button {
@@ -136,8 +148,8 @@
     </div>
     <div class="container">
         <div class="left-container">
-            <label for="year-selector">Selecciona<br><span>una Torre</span></label>
-            <select id="year-selector" name="year">
+            <label for="torreSelect">Torre</label>
+            <select id="torreSelect" name="torre">
                 <option value="" selected></option>
                 <option value="1920">1920</option>
                 <option value="1960">1960</option>
@@ -208,7 +220,7 @@
 
         // Función para manejar el clic en los botones
         async function handleButtonClick(boton) {
-            const torre = document.getElementById('year-selector').value;
+            const torre = document.getElementById('torreSelect').value;
 
             if (!torre) {
                 mostrarMensaje('Selecciona una Torre');
