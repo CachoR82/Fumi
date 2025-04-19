@@ -7,7 +7,7 @@
     <style>
         table {
             border-collapse: collapse;
-            width: 60%;
+            width: 80%;
             margin: 20px auto;
             font-family: Arial, sans-serif;
             border: none;
@@ -19,13 +19,13 @@
             vertical-align: middle;
         }
         td:nth-child(1) {
-            width: 30%;
+            width: 50%;
         }
         td:nth-child(2) {
             width: 10%;
         }
         td:nth-child(3) {
-            width: 60%;
+            width: 40%;
             text-align: left;
         }
         tr:nth-child(2) td:nth-child(1),
@@ -195,20 +195,31 @@
 
             if (boton === 'completo') {
                 try {
-                    // Consultar registros en Firestore, ordenados por Piso y Depto
+                    // Consultar registros en Firestore sin ordenamiento
                     const querySnapshot = await db.collection('registros')
                         .where('Torre', '==', torre)
-                        .orderBy('Piso')
-                        .orderBy('Depto')
                         .get();
+
+                    // Convertir los documentos a un array
+                    const registros = [];
+                    querySnapshot.forEach(doc => {
+                        registros.push(doc.data());
+                    });
+
+                    // Ordenar localmente por Piso (como número) y Depto
+                    registros.sort((a, b) => {
+                        const pisoA = parseInt(a.Piso);
+                        const pisoB = parseInt(b.Piso);
+                        if (pisoA !== pisoB) return pisoA - pisoB;
+                        return a.Depto.localeCompare(b.Depto);
+                    });
 
                     // Definir los nombres de los campos en el orden especificado
                     const campos = ['Torre', 'MarcaTemporal', 'Piso', 'Depto', 'Horario', 'Serv', 'Obs'];
 
                     // Formatear datos
                     let texto = campos.join('\t') + '\n';
-                    querySnapshot.forEach(doc => {
-                        const data = doc.data();
+                    registros.forEach(data => {
                         const registro = [
                             data.Torre || '',
                             data.MarcaTemporal || '',
@@ -233,8 +244,6 @@
                     const querySnapshot = await db.collection('registros')
                         .where('Torre', '==', torre)
                         .where('Serv', '==', true)
-                        .orderBy('Piso')
-                        .orderBy('Depto')
                         .get();
 
                     if (querySnapshot.empty) {
@@ -243,13 +252,26 @@
                         return;
                     }
 
+                    // Convertir los documentos a un array
+                    const registros = [];
+                    querySnapshot.forEach(doc => {
+                        registros.push(doc.data());
+                    });
+
+                    // Ordenar localmente por Piso (como número) y Depto
+                    registros.sort((a, b) => {
+                        const pisoA = parseInt(a.Piso);
+                        const pisoB = parseInt(b.Piso);
+                        if (pisoA !== pisoB) return pisoA - pisoB;
+                        return a.Depto.localeCompare(b.Depto);
+                    });
+
                     // Definir los nombres de los campos para el informe fumigador
                     const campos = ['Torre', 'Piso', 'Depto', 'Horario', 'Obs'];
 
                     // Formatear datos
                     let texto = campos.join('\t') + '\n';
-                    querySnapshot.forEach(doc => {
-                        const data = doc.data();
+                    registros.forEach(data => {
                         const registro = [
                             data.Torre || '',
                             data.Piso || '',
@@ -264,7 +286,7 @@
                     await navigator.clipboard.writeText(texto);
                     mostrarMensaje('Servicios requeridos copiados al portapapeles');
                 } catch (error) {
-                    mostrarMensaje('Error al consultar la base de datos: ' + error.message);
+                    mostrarMensaje('Error al consultar la base de datos: ' + error.message, 5000);
                 }
             } else if (boton === 'inicializar') {
                 try {
