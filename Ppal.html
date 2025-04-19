@@ -218,6 +218,22 @@
             }, duracion);
         }
 
+        // Función para formatear la fecha
+        function formatearFecha(timestamp) {
+            if (!timestamp) return ''; // Maneja casos nulos o indefinidos
+            if (timestamp.toDate) { // Verifica si es un Timestamp de Firestore
+                const fecha = timestamp.toDate();
+                const dia = String(fecha.getDate()).padStart(2, '0');
+                const mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Meses son 0-11
+                const anio = fecha.getFullYear();
+                const horas = String(fecha.getHours()).padStart(2, '0');
+                const minutos = String(fecha.getMinutes()).padStart(2, '0');
+                const segundos = String(fecha.getSeconds()).padStart(2, '0');
+                return `${dia}/${mes}/${anio} ${horas}:${minutos}:${segundos}`;
+            }
+            return timestamp; // Si no es un Timestamp, devuelve el valor original
+        }
+
         // Función para manejar el clic en los botones
         async function handleButtonClick(boton) {
             const torre = document.getElementById('torreSelect').value;
@@ -250,7 +266,7 @@
                     registros.forEach(data => {
                         const registro = [
                             data.Torre || '',
-                            data.MarcaTemporal || '',
+                            formatearFecha(data.MarcaTemporal), // Usa la función para formatear
                             data.Piso || '',
                             data.Depto || '',
                             data.Horario || '',
@@ -320,7 +336,7 @@
 
                     querySnapshot.forEach(doc => {
                         batch.update(db.collection('registros').doc(doc.id), {
-                            MarcaTemporal: '',
+                            MarcaTemporal: null,
                             Horario: '',
                             Serv: false,
                             Obs: ''

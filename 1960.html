@@ -1,301 +1,301 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reserva para fumigación</title>
     <style>
-      body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px 0; /* Padding solo arriba y abajo */
-      background-color: #8B0000;
-      min-height: 100vh;
-      }
-      .container {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 320px; /* Aumentado ligeramente para acomodar el nuevo ancho */
-      margin: 20px auto; /* Centrado horizontalmente y margen superior */
-      }
-h1 {
-  font-size: 1.5em;
-  margin-bottom: 5px; /* Reducido para acercar el subtítulo */
-  text-align: center;}
-
-h2 {
-  font-size: 10px; /* Tamaño de letra 10 */
-  text-align: center; /* Centrado */
-  margin: 5px 0 25px 0; /* 5px arriba, 25px abajo, 0 a los lados */}
-      
-      table {
-      border-collapse: collapse;
-      margin-bottom: 15px;
-      width: 100%;
-      }
-      td {
-      border: 0;
-      padding: 5px;
-      }
-      td:nth-child(1) {
-      width: 80px;
-      text-align: left;
-      }
-      td:nth-child(2) {
-      width: 100px; /* Aumentado para alinearse con el select */
-      text-align: left;
-      }
-      td:nth-child(3) {
-      width: 100px;
-      text-align: center;
-      vertical-align: middle;
-      }
-      .form-group {
-      margin-bottom: 15px;
-      display: block;
-      text-align: left;
-      }
-      label {
-      display: inline-block;
-      width: 80px;
-      text-align: left;
-      }
-      input[type="text"]#piso {
-      width: 80px;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-      background-color: #fff; /* Fondo blanco explícito */
-      }
-      select#depto {
-      width: 100px; /* Aumentado para mostrar el texto completo */
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-      background-color: #fff; /* Fondo blanco para coincidir con el input */
-      color: #000; /* Color del texto para consistencia */
-      }
-      input[type="text"]#horario {
-      width: 150px;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-      display: inline-block;
-      background-color: #fff; /* Fondo blanco explícito */
-      }
-      input[type="checkbox"] {
-      width: 20px;
-      height: 20px;
-      margin: 0;
-      vertical-align: middle;
-      }
-      button#buscar {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      width: 100px;
-      }
-      button#guardar {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      width: 170px;
-      margin: 10px 0;
-      display: block;
-      }
-      button:hover {
-      background-color: #45a049;
-      }
-      #mensaje-container {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: rgba(255, 0, 0, 0.8);
-      color: white;
-      padding: 10px 20px;
-      border-radius: 5px;
-      font-size: 1em;
-      display: none;
-      z-index: 1000;
-      text-align: center;
-      max-width: 80%;
-      }
-      .hidden {
-      display: none;
-      }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px 0;
+            background-color: #804000;
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 320px;
+            margin: 20px auto;
+        }
+        h1 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        h2 {
+            font-size: 10px;
+            text-align: center;
+            margin: 5px 0 25px 0;
+        }
+        table {
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        td {
+            border: 0;
+            padding: 5px;
+        }
+        td:nth-child(1) {
+            width: 80px;
+            text-align: left;
+        }
+        td:nth-child(2) {
+            width: 100px;
+            text-align: left;
+        }
+        td:nth-child(3) {
+            width: 100px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            display: block;
+            text-align: left;
+        }
+        label {
+            display: inline-block;
+            width: 80px;
+            text-align: left;
+        }
+        input[type="text"]#piso {
+            width: 80px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+        select#depto {
+            width: 100px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: #fff;
+            color: #000;
+        }
+        input[type="text"]#horario {
+            width: 150px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            display: inline-block;
+            background-color: #fff;
+        }
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin: 0;
+            vertical-align: middle;
+        }
+        button#buscar {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100px;
+        }
+        button#guardar {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 170px;
+            margin: 10px 0;
+            display: block;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #mensaje-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1em;
+            display: none;
+            z-index: 1000;
+            text-align: center;
+            max-width: 80%;
+        }
+        .hidden {
+            display: none;
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="container">
-      <h1>Reserva para fumigación</h1>
-      <h2>Irigoyen 1960</h2>
-      <div id="mensaje-container"></div>
-      <table>
-        <tr>
-          <td><label for="piso">Piso:</label></td>
-          <td><label for="depto">Depto:</label></td>
-          <td rowspan="2"><button id="buscar" onclick="buscarRegistro()">Buscar</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" id="piso" placeholder="Ej: 14"></td>
-          <td>
-            <select id="depto">
-              <option value="" disabled selected>Depto</option>
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-              <option value="D">D</option>
-            </select>
-          </td>
-        </tr>
-      </table>
-      <div id="editarCampos" class="hidden">
-        <div class="form-group">
-          <label for="horario">Horario:</label>
-          <input type="text" id="horario" placeholder="Ej: De 10 a 13:00">
+        <h1>Reserva para fumigación</h1>
+        <h2>Irigoyen 1960</h2>
+        <div id="mensaje-container"></div>
+        <table>
+            <tr>
+                <td><label for="piso">Piso:</label></td>
+                <td><label for="depto">Depto:</label></td>
+                <td rowspan="2"><button id="buscar" onclick="buscarRegistro()">Buscar</button></td>
+            </tr>
+            <tr>
+                <td><input type="text" id="piso" placeholder="Ej: 14"></td>
+                <td>
+                    <select id="depto">
+                        <option value="" disabled selected>Depto</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <div id="editarCampos" class="hidden">
+            <div class="form-group">
+                <label for="horario">Horario:</label>
+                <input type="text" id="horario" placeholder="Ej: De 10 a 13:00">
+            </div>
+            <div class="form-group">
+                <label for="serv">Serv:</label>
+                <input type="checkbox" id="serv">
+            </div>
+            <button id="guardar" onclick="guardarCambios()">Guardar Cambios</button>
         </div>
-        <div class="form-group">
-          <label for="serv">Serv:</label>
-          <input type="checkbox" id="serv">
-        </div>
-        <button id="guardar" onclick="guardarCambios()">Guardar Cambios</button>
-      </div>
     </div>
     <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore-compat.js"></script>
     <script>
-      const firebaseConfig = {
-          apiKey: "AIzaSyAMUS7WoP8P1aiSsdYs-pIsebqGlohviFA",
-          authDomain: "editar-datos-2025.firebaseapp.com",
-          projectId: "editar-datos-2025",
-          storageBucket: "editar-datos-2025.firebasestorage.app",
-          messagingSenderId: "804732249379",
-          appId: "1:804732249379:web:bd329186fffac49e7f9896"
-      };
+        const firebaseConfig = {
+            apiKey: "AIzaSyAMUS7WoP8P1aiSsdYs-pIsebqGlohviFA",
+            authDomain: "editar-datos-2025.firebaseapp.com",
+            projectId: "editar-datos-2025",
+            storageBucket: "editar-datos-2025.firebasestorage.app",
+            messagingSenderId: "804732249379",
+            appId: "1:804732249379:web:bd329186fffac49e7f9896"
+        };
 
-      firebase.initializeApp(firebaseConfig);
-      const db = firebase.firestore();
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-      const mensajeContainer = document.getElementById('mensaje-container');
-      const editarCampos = document.getElementById('editarCampos');
-      const pisoInput = document.getElementById('piso');
-      const deptoInput = document.getElementById('depto');
+        const mensajeContainer = document.getElementById('mensaje-container');
+        const editarCampos = document.getElementById('editarCampos');
+        const pisoInput = document.getElementById('piso');
+        const deptoInput = document.getElementById('depto');
 
-      function mostrarMensaje(mensaje) {
-          mensajeContainer.textContent = mensaje;
-          mensajeContainer.style.backgroundColor = 'rgba(255, 0, 0, 0.8)';
-          mensajeContainer.style.display = 'block';
-          setTimeout(() => {
-              mensajeContainer.style.display = 'none';
-              editarCampos.classList.add('hidden');
-              pisoInput.value = ''; // Limpiar campo piso
-              deptoInput.value = ''; // Limpiar campo depto
-          }, 3000);
-      }
+        function mostrarMensaje(mensaje) {
+            mensajeContainer.textContent = mensaje;
+            mensajeContainer.style.backgroundColor = 'rgba(255, 0, 0, 0.8)';
+            mensajeContainer.style.display = 'block';
+            setTimeout(() => {
+                mensajeContainer.style.display = 'none';
+                editarCampos.classList.add('hidden');
+                pisoInput.value = '';
+                deptoInput.value = '';
+            }, 3000);
+        }
 
-      async function buscarRegistro() {
-          const piso = pisoInput.value.trim();
-          const depto = deptoInput.value.trim().toUpperCase();
+        async function buscarRegistro() {
+            const piso = pisoInput.value.trim();
+            const depto = deptoInput.value.trim().toUpperCase();
 
-          if (!piso || !depto) {
-              mostrarMensaje('Por favor, ingrese Piso y Depto.');
-              return;
-          }
+            if (!piso || !depto) {
+                mostrarMensaje('Por favor, ingrese Piso y Depto.');
+                return;
+            }
 
-          try {
-              const querySnapshot = await db.collection('registros')
-                  .where('Piso', '==', piso)
-                  .where('Depto', '==', depto)
-                  .where('Torre', '==', '1960') // Filtrar por Torre
-                  .get();
+            try {
+                const querySnapshot = await db.collection('registros')
+                    .where('Piso', '==', piso)
+                    .where('Depto', '==', depto)
+                    .where('Torre', '==', '1960')
+                    .get();
 
-              if (querySnapshot.empty) {
-                  mostrarMensaje(`El par Piso: ${piso}, Depto: ${depto}, Torre: 1960 no existe.`);
-                  editarCampos.classList.add('hidden');
-                  return;
-              }
+                if (querySnapshot.empty) {
+                    mostrarMensaje(`El par Piso: ${piso}, Depto: ${depto}, Torre: 1960 no existe.`);
+                    editarCampos.classList.add('hidden');
+                    return;
+                }
 
-              const doc = querySnapshot.docs[0];
-              document.getElementById('horario').value = doc.data().Horario || '';
-              document.getElementById('serv').checked = doc.data().Serv || false;
-              editarCampos.classList.remove('hidden');
-          } catch (error) {
-              mostrarMensaje('Error al buscar el registro: ' + error.message);
-          }
-      }
+                const doc = querySnapshot.docs[0];
+                document.getElementById('horario').value = doc.data().Horario || '';
+                document.getElementById('serv').checked = doc.data().Serv || false;
+                editarCampos.classList.remove('hidden');
+            } catch (error) {
+                mostrarMensaje('Error al buscar el registro: ' + error.message);
+            }
+        }
 
-      async function consultaFalsa() {
-          try {
-              // Buscar el registro con Piso=1, Depto=A y Torre=1960 (siempre existe)
-              const querySnapshot = await db.collection('registros')
-                  .where('Piso', '==', '1')
-                  .where('Depto', '==', 'A')
-                  .where('Torre', '==', '1960') // Filtrar por Torre
-                  .get();
+        async function consultaFalsa() {
+            try {
+                const querySnapshot = await db.collection('registros')
+                    .where('Piso', '==', '1')
+                    .where('Depto', '==', 'A')
+                    .where('Torre', '==', '1960')
+                    .get();
 
-              const doc = querySnapshot.docs[0];
-              const observacionesActual = doc.data().Obs || ''; // Tratar como cadena vacía si no existe
+                const doc = querySnapshot.docs[0];
+                const observacionesActual = doc.data().Obs || '';
+                const nuevasObservaciones = observacionesActual + ' ';
+                await db.collection('registros').doc(doc.id).update({
+                    Obs: nuevasObservaciones
+                });
+            } catch (error) {
+                console.log('Error en consulta falsa:', error.message);
+            }
+        }
 
-              // Agregar un espacio en blanco al final de Obs
-              const nuevasObservaciones = observacionesActual + ' ';
+        async function guardarCambios() {
+            const piso = pisoInput.value.trim();
+            const depto = deptoInput.value.trim().toUpperCase();
+            let horario = document.getElementById('horario').value.trim(); // Usamos let para permitir modificación
+            const serv = document.getElementById('serv').checked;
 
-              // Actualizar solo el campo Obs
-              await db.collection('registros').doc(doc.id).update({
-                  Obs: nuevasObservaciones
-              });
-          } catch (error) {
-              console.log('Error en consulta falsa:', error.message);
-          }
-      }
+            // Verificar si serv es false y limpiar el campo horario si es necesario
+            if (!serv) {
+                horario = ''; // Limpiar el campo horario
+                document.getElementById('horario').value = ''; // Actualizar el valor en el input
+            }
 
-      async function guardarCambios() {
-          const piso = pisoInput.value.trim();
-          const depto = deptoInput.value.trim().toUpperCase();
-          const horario = document.getElementById('horario').value.trim();
-          const serv = document.getElementById('serv').checked;
+            try {
+                const querySnapshot = await db.collection('registros')
+                    .where('Piso', '==', piso)
+                    .where('Depto', '==', depto)
+                    .where('Torre', '==', '1960')
+                    .get();
 
-          try {
-              const querySnapshot = await db.collection('registros')
-                  .where('Piso', '==', piso)
-                  .where('Depto', '==', depto)
-                  .where('Torre', '==', '1960') // Filtrar por Torre
-                  .get();
+                if (querySnapshot.empty) {
+                    mostrarMensaje('Registro no encontrado.');
+                    return;
+                }
 
-              if (querySnapshot.empty) {
-                  mostrarMensaje('Registro no encontrado.');
-                  return;
-              }
+                const doc = querySnapshot.docs[0];
+                await db.collection('registros').doc(doc.id).update({
+                    Horario: horario,
+                    Serv: serv,
+                    MarcaTemporal: firebase.firestore.Timestamp.now()
+                });
 
-              const doc = querySnapshot.docs[0];
-              await db.collection('registros').doc(doc.id).update({
-                  Horario: horario,
-                  Serv: serv,
-                  MarcaTemporal: new Date().toLocaleString('es-AR')
-              });
+                mostrarMensaje('Cambios guardados exitosamente.');
+            } catch (error) {
+                mostrarMensaje('Error al guardar los cambios: ' + error.message);
+            }
+        }
 
-              mostrarMensaje('Cambios guardados exitosamente.');
-          } catch (error) {
-              mostrarMensaje('Error al guardar los cambios: ' + error.message);
-          }
-      }
-
-      // Ejecutar la consulta falsa al cargar la página
-      window.onload = function() {
-          consultaFalsa();
-      };
+        window.onload = function() {
+            consultaFalsa();
+        };
     </script>
-  </body>
+</body>
 </html>
